@@ -6,6 +6,7 @@ import numpy as np
 import pylab
 import pylab as pl
 import webbrowser
+import math 
 
 def ConvContinuo(tx,x,th,h):
         st.write(""" **Convolución** """)
@@ -246,7 +247,6 @@ plt.xlim(tinicialh,tfinalh)
 plt.grid(b=True,which='major')
 plt.minorticks_on()
 plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
-
 
 if Tiempo=='Continuo':
     #------------x(t)---------#
