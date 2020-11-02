@@ -183,7 +183,6 @@ def RepFourier(tx,x,th,h,tinicialx,tfinalx,n):
 
     st.pyplot(fig)
 
-    Codigo=st.button('Mostrar código utilizado')
     
 
 st.write(""" 
