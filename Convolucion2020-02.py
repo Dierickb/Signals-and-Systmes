@@ -495,7 +495,7 @@ if Tiempo=='Continuo':
     st.pyplot(fig)
 
     if Convolucion:
-        ConvContinuo(tx, x, th, h)
+        ConvContinuo(tx,x, th,h)
 
 if Tiempo=='Discreto':
     #------------x[n]---------#
