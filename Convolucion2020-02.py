@@ -5,7 +5,6 @@ import scipy.stats as stats
 import numpy as np
 import pylab
 import pylab as pl
-import math
 import webbrowser
 from scipy.fftpack import fft, fftfreq
 
