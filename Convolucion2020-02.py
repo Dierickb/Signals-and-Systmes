@@ -144,7 +144,6 @@ def RepFourier(tx,x,th,h,tinicialx,tfinalx,n):
     plt.grid(b=True,which='major')
     plt.minorticks_on()
     plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
-
     
     dt = 0.01
     T=tfinalx-tinicialx
