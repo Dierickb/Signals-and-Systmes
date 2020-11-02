@@ -6,6 +6,133 @@ import numpy as np
 import pylab
 import pylab as pl
 import math
+import webbrowser
+from scipy.fftpack import fft, fftfreq
+
+def ConvContinuo(tx,x,th,h):
+        st.write(""" **Convolución** """)
+        empty = st.empty()
+
+        espacio=max(-th)-min(tx)
+        t2inv=(-th-espacio)
+        frame = 30
+
+        y1=signal.convolve(x,h)
+
+        tconv=np.linspace( min(tx), max(tx)+(max(th)-min(th)), len(y1) )
+
+        for  i in range( 0,(frame+1) ):      
+
+                fig=plt.figure(figsize=(12,10))
+                fig.tight_layout()
+
+                ax3 = fig.add_subplot(2,1,1)
+                ax3.clear()
+                ax3.set_title('Gráfica animacion y[n]=x[n]*h[n]')
+                ax3.set_xlabel('t[n]')
+                ax3.set_ylabel('x[n] y h[n]')         
+                plt.grid(b=True,which='major')
+                plt.minorticks_on()
+                plt.grid(b=True,which='minor',linestyle='-',alpha=0.3) 
+                plt.xlim( min(-th) - (max(-th)-min(tx)) , max(tx) + (max(th)-min(th)) )
+                ax3.plot( t2inv+( ((max(tx)-min(t2inv))/frame) *i),h,color=colorax2) 
+                ax3.plot(tx,x,color=colorax1)  
+                ax3.legend(['h(t)','x(t)'],loc='upper left')
+                                    
+                pulse=np.piecewise( tconv, [tconv<( min(tx)+( ((max(tx)-min(t2inv))/frame) *i) )\
+                    , tconv>=(min(tx)+( ((max(tx)-min(t2inv))/frame) *i) )],[1,0])
+                y=pulse*y1
+
+                ax4 = fig.add_subplot(2,1,2)
+                ax4.clear()
+                colorax4='tab:brown'
+                ax4.set_title('Gráfica convolucion y[n]=x[n]*h[n]')
+                ax4.set_xlabel('t[s]')
+                ax4.set_ylabel('y[t]')
+                plt.xlim( min(-th) - (max(-th)-min(tx)) , max(tx) + (max(th)-min(th)))
+                plt.grid(b=True,which='major')
+                plt.minorticks_on()
+                plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
+                ax4.plot(tconv,y,color=colorax4)    
+                ax4.legend(['y(t)'],loc='upper left')
+
+                st.set_option('deprecation.showPyplotGlobalUse', False)
+                empty.pyplot(fig)  
+def ConvDiscreto(tx,x,th,h):
+        st.write(""" **Convolución** """)
+        empty = st.empty()
+
+        espacio=max(-th)-min(tx)
+        t2inv=(-th-espacio)
+        frame =20
+
+        y1=signal.convolve(x,h)
+
+        tconv=np.arange( int(min(tx)), int(max(tx)+(max(th)-min(th)))+1, 1 )
+
+        for  i in range( 0,(frame+1) ):   
+
+                fig=plt.figure(figsize=(12,10))
+                fig.tight_layout()
+                
+                ax3 = fig.add_subplot(2,1,1)
+                ax3.clear()
+                ax3.set_title('Gráfica animacion y[n]=x[n]*h[n]')
+                ax3.set_xlabel('t[n]')
+                ax3.set_ylabel('x[n] y h[n]')         
+                plt.grid(b=True,which='major')
+                plt.minorticks_on()
+                plt.grid(b=True,which='minor',linestyle='-',alpha=0.3) 
+                plt.xlim( min(-th) - (max(-th)-min(tx)) , max(tx) + (max(th)-min(th)) )
+                ax3.stem( t2inv+( ((max(tx)-min(t2inv))/frame) *i),h) 
+                ax3.stem(tx,x)  
+                ax3.legend(['h[n]','x[n]'],loc='upper left')
+                        
+                pulse=np.piecewise( tconv, [tconv<( min(tx)+( ((max(tx)-min(t2inv))/frame) *i) )\
+                    , tconv>=(min(tx)+( ((max(tx)-min(t2inv))/frame) *i) )],[1,0])
+                y=pulse*y1
+
+                ax4 = fig.add_subplot(2,1,2)
+                ax4.clear()
+                colorax4='tab:brown'
+                ax4.set_title('Gráfica convolucion y[n]=x[n]*h[n]')
+                ax4.set_xlabel('t[s]')
+                ax4.set_ylabel('y[t]')
+                plt.xlim( min(-th) - (max(-th)-min(tx)) , max(tx) + (max(th)-min(th)))
+                plt.grid(b=True,which='major')
+                plt.minorticks_on()
+                plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
+                ax4.stem(tconv,y)    
+                ax4.legend(['y([t]'],loc='upper left')
+                
+                st.set_option('deprecation.showPyplotGlobalUse', False)
+                empty.pyplot(fig) 
+def RepFourier(tx,x,th,h):
+
+    fig=plt.figure(figsize=(12,10))
+    fig.tight_layout()
+
+    ax5 = fig.add_subplot(2,1,1)
+    ax5.set_title('Gráfica X(f)')
+    colorax1 = 'tab:red'     
+    ax5.set_xlabel('f(Hz)', color=colorax1)
+    ax5.set_ylabel('X(f)', color=colorax1)  
+    plt.xlim(tinicialx,tfinalx)
+    plt.grid(b=True,which='major')
+    plt.minorticks_on()
+    plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
+
+    ax6 = fig.add_subplot(2,1,2)
+    ax6.set_title('Gráfica H(f)')
+    colorax2 = 'tab:blue'
+    ax6.set_xlabel('f(Hz)', color=colorax2)
+    ax6.set_ylabel('H(f)', color=colorax2) 
+    plt.xlim(tinicialx,tfinalh)
+    plt.grid(b=True,which='major')
+    plt.minorticks_on()
+    plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
+
+    st.pyplot(fig)
 
 st.write(""" 
 # Segundo laboratorio de Señales y Sistemas
@@ -35,10 +162,15 @@ tfinalh = st.sidebar.number_input("'Ingrese el t final de la señal h(t)",value=
 EscTiem2 =st.sidebar.number_input("Ingrese el Escalamiento del tiempo de la señal h(t)", value=1.0, step=0.1) 
 DespTiemp2 =st.sidebar.number_input("Ingrese el desplazamiento del tiempo de la señal h(t)",value=0.0, step=0.1) 
 
+Codigo=st.button('Mostrar código')
+if Codigo:
+    url = 'https://github.com/Dierickb/Signals-and-Systmes/blob/Mediante-funciones/Convolucion2020-02.py'
+    webbrowser.open_new_tab(url)
+
 Convolucion=st.button("Gráficar Convolución")
 Fourier=st.button("Representación mediante series de Fourier")
 
-fig, (ax1, ax2) = plt.subplots(2)
+fig, (ax1, ax2, ax3, ax4, ax5, ax6) = plt.subplots(6)
 fig=plt.figure(figsize=(12,10))
 fig.tight_layout()
 
@@ -308,6 +440,9 @@ if Tiempo=='Continuo':
 
     st.pyplot(fig)
 
+    if Convolucion:
+        ConvContinuo(tx, x, th, h)
+
 if Tiempo=='Discreto':
     #------------x[n]---------#
     tx = np.arange(int(tinicialx),int(tfinalx)+1, 1 )
@@ -569,100 +704,8 @@ if Tiempo=='Discreto':
 
     st.pyplot(fig)
 
-if  Convolucion:      
-    st.write(""" **Convolución** """)
-    empty = st.empty()
+    if Convolucion:
+        ConvDiscreto(tx,x,th,h)
 
-    if Tiempo=='Continuo':
-
-        espacio=max(-th)-min(tx)
-        t2inv=(-th-espacio)
-        frame = 30
-
-        y1=signal.convolve(x,h)
-
-        tconv=np.linspace( min(tx), max(tx)+(max(th)-min(th)), len(y1) )
-
-        for  i in range( 0,(frame+1) ):      
-
-                ax3 = fig.add_subplot(2,1,1)                 
-                ax3.clear()
-                ax3.set_title('Gráfica animacion y(t)=x(t)*h(t)')
-                ax3.set_xlabel('t(s)')
-                ax3.set_ylabel('x(t) y h(t)')            
-                
-                plt.grid(b=True,which='major')
-                plt.minorticks_on()
-                plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)                
-
-                plt.xlim( min(-th) - (max(-th)-min(tx)) , max(tx) + (max(th)-min(th)) )
-                ax3.plot( t2inv+( ((max(tx)-min(t2inv))/frame) *i),h,color=colorax2) 
-                ax3.plot(tx,x,color=colorax1)  
-                ax3.legend(['h(t)','x(t)'],loc='upper left')
-                                    
-                pulse=np.piecewise( tconv, [tconv<( min(tx)+( ((max(tx)-min(t2inv))/frame) *i) )\
-                    , tconv>=(min(tx)+( ((max(tx)-min(t2inv))/frame) *i) )],[1,0])
-                y=pulse*y1
-                ax4 = fig.add_subplot(2,1,2) 
-                colorax4='tab:brown'
-                ax4.set_title('Gráfica convolucion y(t)=x(t)*h(t)')
-                ax4.set_xlabel('t(s)')
-                ax4.set_ylabel('y(t)')
-                plt.xlim( min(-th) - (max(-th)-min(tx)) , max(tx) + (max(th)-min(th)))
-                plt.grid(b=True,which='major')
-                plt.minorticks_on()
-                plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
-
-                ax4.plot(tconv,y,color=colorax4)    
-                ax4.legend(['y(t)'],loc='upper left')
-
-                st.set_option('deprecation.showPyplotGlobalUse', False)
-                empty.pyplot()  
-                    
-    if Tiempo=='Discreto':
-
-        espacio=max(-th)-min(tx)
-        t2inv=(-th-espacio)
-        frame =20
-
-        y1=signal.convolve(x,h)
-
-        tconv=np.arange( int(min(tx)), int(max(tx)+(max(th)-min(th)))+1, 1 )
-
-        for  i in range( 0,(frame+1) ):      
-
-                ax3 = fig.add_subplot(2,1,1)                 
-                ax3.clear()
-                ax3.set_title('Gráfica animacion y[n]=x[n]*h[n]')
-                ax3.set_xlabel('t[n]')
-                ax3.set_ylabel('x[n] y h[n]')            
-                
-                plt.grid(b=True,which='major')
-                plt.minorticks_on()
-                plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)                
-
-                plt.xlim( min(-th) - (max(-th)-min(tx)) , max(tx) + (max(th)-min(th)) )
-                ax3.stem( t2inv+( ((max(tx)-min(t2inv))/frame) *i),h) 
-                ax3.stem(tx,x)  
-                ax3.legend(['h[n]','x[n]'],loc='upper left')
-                    
-                
-                pulse=np.piecewise( tconv, [tconv<( min(tx)+( ((max(tx)-min(t2inv))/frame) *i) )\
-                    , tconv>=(min(tx)+( ((max(tx)-min(t2inv))/frame) *i) )],[1,0])
-                y=pulse*y1
-                ax4 = fig.add_subplot(2,1,2) 
-                colorax4='tab:brown'
-                ax4.set_title('Gráfica convolucion y[n]=x[n]*h[n]')
-                ax4.set_xlabel('t[s]')
-                ax4.set_ylabel('y[t]')
-                plt.xlim( min(-th) - (max(-th)-min(tx)) , max(tx) + (max(th)-min(th)))
-                plt.grid(b=True,which='major')
-                plt.minorticks_on()
-                plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
-
-                ax4.stem(tconv,y)    
-                ax4.legend(['y([t]'],loc='upper left')
-                
-                st.set_option('deprecation.showPyplotGlobalUse', False)
-                empty.pyplot() 
-                
+if Fourier:
+    RepFourier(tx,x,th,h)
