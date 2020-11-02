@@ -6,7 +6,6 @@ import numpy as np
 import pylab
 import pylab as pl
 import webbrowser
-from scipy.fftpack import fft, fftfreq
 
 def ConvContinuo(tx,x,th,h):
         st.write(""" **Convolución** """)
@@ -106,32 +105,87 @@ def ConvDiscreto(tx,x,th,h):
                 
                 st.set_option('deprecation.showPyplotGlobalUse', False)
                 empty.pyplot(fig) 
-def RepFourier(tx,x,th,h):
+def RepFourier(tx,x,th,h,tinicialx,tfinalx,n):
+        
+    colorax1 = 'tab:red'
+    colorax2 = 'tab:blue'
 
-    fig=plt.figure(figsize=(12,10))
+    fig=plt.figure(figsize=(12,20))
     fig.tight_layout()
 
-    ax5 = fig.add_subplot(2,1,1)
+    ax5 = fig.add_subplot(3,1,1)
     ax5.set_title('Gráfica X(f)')
     colorax1 = 'tab:red'     
-    ax5.set_xlabel('f(Hz)', color=colorax1)
+    ax5.set_xlabel('f(w)', color=colorax1)
     ax5.set_ylabel('X(f)', color=colorax1)  
     plt.xlim(tinicialx,tfinalx)
     plt.grid(b=True,which='major')
     plt.minorticks_on()
     plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
 
-    ax6 = fig.add_subplot(2,1,2)
+    ax6 = fig.add_subplot(3,1,2)
     ax6.set_title('Gráfica H(f)')
+    ax6.set_ylabel('X(f)', color=colorax1)  
     colorax2 = 'tab:blue'
-    ax6.set_xlabel('f(Hz)', color=colorax2)
-    ax6.set_ylabel('H(f)', color=colorax2) 
-    plt.xlim(tinicialx,tfinalh)
+    ax6.set_xlabel('f(w)', color=colorax1)
+    ax6.set_ylabel('H(f)', color=colorax1) 
+    plt.xlim(tinicialx,tfinalx)
     plt.grid(b=True,which='major')
     plt.minorticks_on()
     plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
 
+    ax7 = fig.add_subplot(3,1,3)
+    ax7.set_title('Gráfica H(f)')
+    ax7.set_ylabel('X(f)', color=colorax1)  
+    colorax2 = 'tab:blue'
+    ax7.set_xlabel('f(w)', color=colorax1)
+    ax7.set_ylabel('H(f)', color=colorax1) 
+    plt.xlim(tinicialx,tfinalx)
+    plt.grid(b=True,which='major')
+    plt.minorticks_on()
+    plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
+
+    
+    dt = 0.01
+    T=tfinalx-tinicialx
+    wo = (2*np.pi)/T
+    ak = np.zeros(n)
+    bk = np.zeros(n)
+    m = len(tx)
+    A0 = 0
+    for i in range(1,m):
+        A0 = A0 +(1/T)*x[i]*dt
+    for i in range(1,n):
+        for j in range(0,int(m)):
+            ak[i] = ak[i] + ((2/T)*x[j]*np.cos(i*tx[j]*wo))*dt
+            bk[i] = bk[i] + ((2/T)*x[j]*np.sin(i*tx[j]*wo))*dt
+
+    r = 0.1
+    t1 = np.arange(0, 10+r, r)
+    xf= 0*t1+A0
+
+    for i in range(1, n):
+        xf = xf + ak[i]*np.cos(i*wo*t1)+bk[i]*np.sin(i*wo*t1)
+
+    n_wo = np.arange(n)
+    ck = np.zeros(n)
+    phik = np.zeros(n)
+
+    for i in range(n):
+        ck[i] = (ak[i]**2+bk[i]**2)**0.5
+        phik[i] = -np.arctan(bk[i]/ak[i])
+
+    ax5.plot(t1,xf,color = colorax1)
+    ax5.legend(['x(t)'],loc='upper left')
+    ax6.stem(n_wo,ck)
+    ax6.legend(['x(t)'],loc='upper left')
+    ax7.stem(n_wo,phik)
+    ax7.legend(['x(t)'],loc='upper left')
+
     st.pyplot(fig)
+
+    Codigo=st.button('Mostrar código utilizado')
+    
 
 st.write(""" 
 # Segundo laboratorio de Señales y Sistemas
@@ -156,20 +210,22 @@ Signal2 = st.selectbox("Seleccione la función h(t)",["Seleccione una función"\
     "Cuadrada","Señal rampa 1","Señal rampa 2","Señal rampa 3"], index=0)
 st.sidebar.title('Parametros señal h(t)')
 Amplitud2= st.sidebar.slider("Amplitud de la señal h(t) ",min_value=-10, max_value=10, value=1, step=1)
-tinicialx=st.sidebar.number_input("Ingrese el t inicial de la señal h(t)",value=0.0, step=0.1)   
+tinicialh=st.sidebar.number_input("Ingrese el t inicial de la señal h(t)",value=0.0, step=0.1)   
 tfinalh = st.sidebar.number_input("'Ingrese el t final de la señal h(t)",value=0.0, step=0.1)
 EscTiem2 =st.sidebar.number_input("Ingrese el Escalamiento del tiempo de la señal h(t)", value=1.0, step=0.1) 
 DespTiemp2 =st.sidebar.number_input("Ingrese el desplazamiento del tiempo de la señal h(t)",value=0.0, step=0.1) 
+
+st.sidebar.title('Número de armonicos para la representación en series de Fourier')
+n=st.sidebar.number_input("Ingrese el número n de armonicos", value=0, step=1)
 
 Codigo=st.button('Mostrar código')
 if Codigo:
     url = 'https://github.com/Dierickb/Signals-and-Systmes/blob/Mediante-funciones/Convolucion2020-02.py'
     webbrowser.open_new_tab(url)
-
 Convolucion=st.button("Gráficar Convolución")
 Fourier=st.button("Representación mediante series de Fourier")
 
-fig, (ax1, ax2, ax3, ax4, ax5, ax6) = plt.subplots(6)
+fig, (ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8) = plt.subplots(8)
 fig=plt.figure(figsize=(12,10))
 fig.tight_layout()
 
@@ -188,10 +244,11 @@ ax2.set_title('Gráfica h(t)')
 colorax2 = 'tab:blue'
 ax2.set_xlabel('t(s)', color=colorax2)
 ax2.set_ylabel('h(t)', color=colorax2) 
-plt.xlim(tinicialx,tfinalh)
+plt.xlim(tinicialh,tfinalh)
 plt.grid(b=True,which='major')
 plt.minorticks_on()
 plt.grid(b=True,which='minor',linestyle='-',alpha=0.3)
+
 
 if Tiempo=='Continuo':
     #------------x(t)---------#
@@ -316,8 +373,8 @@ if Tiempo=='Continuo':
         ax1.legend(['x(t)'],loc='upper left')
 
     #------------h(t)---------#
-    tamth=(tfinalh-tinicialx)/0.01
-    th=np.linspace(tinicialx,tfinalh, int(tamth))  
+    tamth=(tfinalh-tinicialh)/0.01
+    th=np.linspace(tinicialh,tfinalh, int(tamth))  
     if   Signal2 == "Seno":       
         frecuencia2 = st.number_input("frecuencia h(t)", min_value=0.0, max_value=200.0, value=1.0, step=0.1)
 
@@ -573,7 +630,7 @@ if Tiempo=='Discreto':
         ax1.legend(['x[n]'],loc='upper left')
 
     #------------h[n]---------#
-    th=np.arange(int(tinicialx),int(tfinalh)+1, 1)  
+    th=np.arange(int(tinicialh),int(tfinalh)+1, 1)  
     if   Signal2 == "Seno":       
         frecuencia2 = st.number_input("frecuencia h[n]", min_value=0.0, max_value=200.0, value=1.0, step=0.1)
 
@@ -706,5 +763,11 @@ if Tiempo=='Discreto':
     if Convolucion:
         ConvDiscreto(tx,x,th,h)
 
-if Fourier:
-    RepFourier(tx,x,th,h)
+if Fourier:    
+    if n!=0:
+        RepFourier(tx,x,th,h,tinicialx,tfinalx,n)
+    else:
+        st.write(""" 
+        # El número de armonicos debe ser mayor que 0, preferiblemente mayor que 1.
+
+        """)
