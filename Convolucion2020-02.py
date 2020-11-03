@@ -3,10 +3,8 @@ import matplotlib.pyplot as plt
 import scipy.signal as signal
 import scipy.stats as stats 
 import numpy as np
-import pylab
 import pylab as pl
 import webbrowser
-import math 
 
 def ConvContinuo(tx,x,th,h):
         st.write(""" **Convolución** """)
@@ -184,8 +182,6 @@ def RepFourier(tx,x,th,h,tinicialx,tfinalx,n):
 
     st.pyplot(fig)
 
-    
-
 st.write(""" 
 # Segundo laboratorio de Señales y Sistemas
 
@@ -219,8 +215,9 @@ n=st.sidebar.number_input("Ingrese el número n de armonicos", value=0, step=1)
 
 Codigo=st.button('Mostrar código')
 if Codigo:
-    url = 'https://github.com/Dierickb/Signals-and-Systmes/blob/Mediante-funciones/Convolucion2020-02.py'
-    webbrowser.open_new_tab(url)
+    webbrowser.open(
+        'https://github.com/Dierickb/Signals-and-Systmes/blob/Mediante-funciones/Convolucion2020-02.py'
+    )
 Convolucion=st.button("Gráficar Convolución")
 Fourier=st.button("Representación mediante series de Fourier")
 
@@ -569,11 +566,8 @@ if Tiempo=='Discreto':
         ax1.legend(['x[n]'],loc='upper left')
 
     elif Signal1 == "Secuencia de impulsos":
-        x=(st.text_input('Escriba los valores de x sin ser separados por coma ni espacios'))
-        tx=(st.text_input('Escriba los valores de n sin ser separados por coma ni espacios'))
-        #ax1.plot(tx,x,color=colorax1)
-        #ax1.legend(['x(t)'],loc='upper left')
-
+        x=(st.text_input('Escriba el tamaño del vector x(t)'))
+  
     elif Signal1 == "Señal rampa 1":
         tamtx1=(3.4-0)/(0.01)
         tamtx2=(6.4-(3.4+0.01))/0.01
