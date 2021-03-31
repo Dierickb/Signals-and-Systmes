@@ -55,6 +55,7 @@ def ConvContinuo(tx,x,th,h):
 
                 st.set_option('deprecation.showPyplotGlobalUse', False)
                 empty.pyplot(fig)  
+
 def ConvDiscreto(tx,x,th,h):
         st.write(""" **Convolución** """)
         empty = st.empty()
@@ -104,6 +105,7 @@ def ConvDiscreto(tx,x,th,h):
                 
                 st.set_option('deprecation.showPyplotGlobalUse', False)
                 empty.pyplot(fig) 
+
 def RepFourier(tx,x,th,h,tinicialx,tfinalx,n):
         
     colorax1 = 'tab:red'
