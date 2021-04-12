@@ -220,6 +220,7 @@ if Codigo:
     webbrowser.open(
         'https://github.com/Dierickb/Signals-and-Systmes/blob/Mediante-funciones/Convolucion2020-02.py'
     )
+
 Convolucion=st.button("Gráficar Convolución")
 Fourier=st.button("Representación mediante series de Fourier")
 
@@ -765,3 +766,4 @@ if Fourier:
         # El número de armonicos debe ser mayor que 0, preferiblemente mayor que 1.
 
         """)
+
